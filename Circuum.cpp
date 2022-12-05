@@ -13,10 +13,10 @@ AF_DCMotor left_motor(1);
 AF_DCMotor right_motor(4);
 
 // SPEEDS
-#define MOTOR_SPEED 32
+#define MOTOR_SPEED 34
 #define TURN_ADDITIONAL_SPEED 15
-#define TURBO_ADDITIONAL_SPEED 80
-#define RIGHT_ADDITIONAL_SPEED 30 // 25 // Because Right Dynamo is Slower than Left
+#define TURBO_ADDITIONAL_SPEED 100
+#define RIGHT_ADDITIONAL_SPEED 32 // 25 // Because Right Dynamo is Slower than Left
 
 // TIME
 #define BACKWARD_TIME 600
@@ -113,21 +113,22 @@ void Circuum::moveBackward(unsigned char speed, unsigned short backwardTime)
     moveStop(0);
 }
 
-void Circuum::turnPump(bool state)
+void Circuum::turnVacuum(bool state)
 {
     digitalWrite(RELAY_PIN, state);
+}
+
+void Circuum::println(String message)
+{
+    if (DEBUGMODE)
+        Serial.println(message);
 }
 
 void Circuum::SHUTDOWN()
 {
     moveStop(2000);
     VACUUM = false;
-    turnPump(false);
-}
-void Circuum::println(String message)
-{
-    if (DEBUGMODE)
-        Serial.println(message);
+    turnVacuum(false);
 }
 
 // |--------------| AUTO MODE |--------------
@@ -143,6 +144,7 @@ void Circuum::SCAN()
     readDistances(); // Ping Distances
     println("L: " + String(LEFT_DISTANCE) + " | R:" + String(RIGHT_DISTANCE));
 
+    // CLIFF = false; // Disable IR
     CLIFF = lookCliff(); // Ping Cliff
     println("Cliff: " + String(CLIFF));
 }
@@ -194,7 +196,7 @@ void Circuum::DECISION()
     if (!VACUUM)
     {
         VACUUM = true;
-        turnPump(true);
+        turnVacuum(true);
     }
 
     // Cliff Detected, Execute Behavior
@@ -348,6 +350,8 @@ void CircuumTest::testDYNAMO(unsigned char DIRECTION)
         moveLeft(MOTOR_SPEED);
     else if (DIRECTION == MODE_RIGHT)
         moveRight(MOTOR_SPEED);
+    else if (MODE_STOP)
+        moveStop(1000);
 }
 
 void CircuumTest::testIR()

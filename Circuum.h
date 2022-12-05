@@ -11,7 +11,7 @@
 #define TRIG_PIN2 A2
 #define ECHO_PIN2 A3
 
-#define IR_PIN A4
+#define IR_PIN A4 
 #define RELAY_PIN A5
 
 class Circuum
@@ -36,9 +36,8 @@ private:
     unsigned short PREV_RIGHT_DISTANCE = 0;
 
     void setSpeeds(unsigned char speed);
-    void moveStop(unsigned short stopTime);
     void Turbo(unsigned char speed);
-    void turnPump(bool state);
+    void turnVacuum(bool state);
 
     void SCAN();
     void EVALUATE();
@@ -54,9 +53,9 @@ public:
     Circuum(bool DebugMode);
     Circuum();
 
-    void init();
-    void AUTOMATIC_MODE();
-    void SHUTDOWN();
+    void init();           // Initialize Library, called inside setup()
+    void AUTOMATIC_MODE(); // Fireup the Automatic
+    void SHUTDOWN();       // Shutdown the automatic Mode
 
     void println(String message);
 
@@ -68,6 +67,7 @@ protected:
     void moveBackward(unsigned char speed, unsigned short backwardTime);
     void moveLeft(unsigned char speed);
     void moveRight(unsigned char speed);
+    void moveStop(unsigned short stopTime);
 
     unsigned short LEFT_DISTANCE;
     unsigned short RIGHT_DISTANCE;
